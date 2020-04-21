@@ -10,6 +10,10 @@
 var inputSearch = $('#search'); // salvo in una variabile il riferimento all'input di ricerca
 var inputSearchVal;
 
+// variabili Template Handlebars
+var source = $('#list-template').html();
+var template = Handlebars.compile(source);
+
 // imposto di default il valore dell'input vuoto
 inputSearch.val("");
 
@@ -17,7 +21,9 @@ inputSearch.val("");
 inputSearch.on('keypress', function (e) {  
 
     // se l'utente preme il tasto invio parte la chiamata ajax
-    if (e.keyCode == 13) {
+  if (e.keyCode == 13) {
+      
+    $('.container').html(''); // rimuovo l'html presente in container, perchè in questo modo i risultati della ricerca precedente vengono eliminati lasciando posto a quelli della nuova ricerca
 
       inputSearchVal = inputSearch.val(); // salvo il valore dell'input ogni volta che viene premuto il tasto invio
 
@@ -49,13 +55,22 @@ inputSearch.on('keypress', function (e) {
             console.log(filmLanguage);
             var filmRank = arrayItem.vote_average; // salvo il voto di ogni film ritornato
             console.log(filmRank);
+
+            // creo il contenuto nei segnaposto del template per ogni iterazione
+            var context = {
+              title: filmTitle,
+              originalTitle: filmOriginalTitle,
+              language: filmLanguage,
+              rank: filmRank
+            }
+
+            // aggiungo al container i risultati della chiamata ajax attraverso il template
+            $('.container').append(template(context));
             
           }
 
-          console.log(result.results);
-
-          
         },
+        
         error: function () {  
 
         }
