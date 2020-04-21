@@ -17,3 +17,7 @@ header {
 h1 {
   color: red;
 }
+
+header button {
+  cursor: pointer;
+}
