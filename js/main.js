@@ -78,13 +78,28 @@ $(document).ready(function () {
           var filmLanguage = arrayItem.original_language; // salvo la lingua di ogni film ritornato
           var filmRank = arrayItem.vote_average; // salvo il voto di ogni film ritornato
 
-          // creo il contenuto nei segnaposto del template per ogni iterazione
-          var context = {
-            title: filmTitle,
-            originalTitle: filmOriginalTitle,
-            language: filmLanguage,
-            rank: filmRank
+          // se il titolo è uguale al titolo originale non stampo il titolo originale
+          if (filmTitle == filmOriginalTitle) {
+
+            var context = {
+              title: filmTitle,
+              language: filmLanguage,
+              rank: filmRank
+            }
+            
+            // altrimenti stampo anche il titolo originale
+          } else {
+            
+            // creo il contenuto nei segnaposto del template per ogni iterazione
+            var context = {
+              title: filmTitle,
+              strongOriginalTitle: 'Titolo originale: ',
+              originalTitle: filmOriginalTitle,
+              language: filmLanguage,
+              rank: filmRank
+            }
           }
+          
 
           // aggiungo al container i risultati della chiamata ajax attraverso il template
           $('.container').append(template(context));
