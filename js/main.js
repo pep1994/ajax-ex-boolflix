@@ -68,50 +68,57 @@ $(document).ready(function () {
       success: function (result, stato) {
 
         var arrayResult = result.results; // salvo in una variabile l'array che mi ritorna dalla chiamata ajax
+        console.log(arrayResult);
+        
 
-        // eseguo ciclo sull'array per estrapolare le informazioni che mi servono ad ogni item
-        for (let i = 0; i < arrayResult.length; i++) {
+          // se l'array è vuoto, cioè non ha risultati, allora stampa il messaggio di errore
+          if (arrayResult.length <= 0) {
 
-          var arrayItem = arrayResult[i]; // salvo l'item dell'array
-          var filmTitle = arrayItem.title; // salvo il titolo di ogni film ritornato
-          var filmOriginalTitle = arrayItem.original_title; // salvo il titolo originale di ogni film ritornato
-          var filmLanguage = arrayItem.original_language; // salvo la lingua di ogni film ritornato
-          var filmRank = arrayItem.vote_average; // salvo il voto di ogni film ritornato
+            $('.container').html('<h2 class="not-found">La ricerca non ha prodotto risultati</h2>');
 
-          // se il titolo è uguale al titolo originale non stampo il titolo originale
-          if (filmTitle == filmOriginalTitle) {
-
-            var context = {
-              title: filmTitle,
-              language: filmLanguage,
-              rank: filmRank
-            }
-            
-            // altrimenti stampo anche il titolo originale
+            // altrimenti esegui il ciclo e stampa le informazioni in pagina
           } else {
+
+              // eseguo ciclo sull'array per estrapolare le informazioni che mi servono ad ogni item
+              for (let i = 0; i < arrayResult.length; i++) {
+
+                var arrayItem = arrayResult[i]; // salvo l'item dell'array
+                var filmTitle = arrayItem.title; // salvo il titolo di ogni film ritornato
+                var filmOriginalTitle = arrayItem.original_title; // salvo il titolo originale di ogni film ritornato
+                var filmLanguage = arrayItem.original_language; // salvo la lingua di ogni film ritornato
+                var filmRank = arrayItem.vote_average; // salvo il voto di ogni film ritornato
+
+
+                // se il titolo è uguale al titolo originale non stampo il titolo originale
+                if (filmTitle == filmOriginalTitle) {
+
+                  var context = {
+                    title: filmTitle,
+                    language: filmLanguage,
+                    rank: filmRank
+                  }
+
+                // altrimenti stampo anche il titolo originale
+                } else {
+
+                  // creo il contenuto nei segnaposto del template per ogni iterazione
+                  context = {
+                    title: filmTitle,
+                    strongOriginalTitle: 'Titolo originale: ',
+                    originalTitle: filmOriginalTitle,
+                    language: filmLanguage,
+                    rank: filmRank
+                  }
+              
+                }
+
+                // aggiungo al container i risultati della chiamata ajax attraverso il template
+                $('.container').append(template(context));
             
-            // creo il contenuto nei segnaposto del template per ogni iterazione
-            var context = {
-              title: filmTitle,
-              strongOriginalTitle: 'Titolo originale: ',
-              originalTitle: filmOriginalTitle,
-              language: filmLanguage,
-              rank: filmRank
-            }
+              }
+            
           }
-          
 
-          // aggiungo al container i risultati della chiamata ajax attraverso il template
-          $('.container').append(template(context));
-
-        }
-
-        // controllo che la ricerca abbia prodotto risultati. Se la ricerca non ha prodotto risultati stampo un messaggio per l'utente
-        if ($('.container').html() == "") {
-
-          $('.container').html('<h2 class="not-found">La ricerca non ha prodotto risultati</h2>');
-          
-        }
 
       },
 
