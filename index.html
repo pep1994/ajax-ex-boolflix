@@ -25,6 +25,7 @@
 
       <div class="container">
 
+        <!-- inserisco template tramite js -->
 
       </div>
 
@@ -35,13 +36,17 @@
 
     <!-- Template -->
     <script id="list-template" type="text/x-handlebars-template">
-          <ul >
-            <li>{{title}}</li>
-            <li>{{originalTitle}}</li>
-            <li>{{language}}</li>
-            <li>{{rank}}</li>
-          </ul>
-        </script>
+      <div class="film-result">
+        <h3>{{title}}</h3>
+        <ul >
+          <li><strong>Titolo originale: </strong>{{originalTitle}}</li>
+          <li><strong>Lingua: </strong>{{language}}</li>
+          <li><strong>Rank: </strong>{{rank}}</li>
+        </ul>
+      </div>
+    </script>
+    <!-------------->
+
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.6/handlebars.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
