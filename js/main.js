@@ -106,6 +106,13 @@ $(document).ready(function () {
 
         }
 
+        // controllo che la ricerca abbia prodotto risultati. Se la ricerca non ha prodotto risultati stampo un messaggio per l'utente
+        if ($('.container').html() == "") {
+
+          $('.container').html('<h2 class="not-found">La ricerca non ha prodotto risultati</h2>');
+          
+        }
+
       },
 
       error: function (richiesta, stato, errore) {

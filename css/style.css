@@ -52,6 +52,11 @@ h1 {
   max-width: 1100px;
   margin: 0 auto;
   align-items: stretch;
+  justify-content: center;
+}
+
+.container .not-found {
+  color: rgb(180, 180, 180);
 }
 /**********************/
 
