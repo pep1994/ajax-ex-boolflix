@@ -75,4 +75,8 @@ h1 {
   list-style-type: none;
   margin-top: 10px;
 }
+
+.film-result img {
+  width: 50px;
+}
 /**************/

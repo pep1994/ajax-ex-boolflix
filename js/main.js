@@ -24,6 +24,9 @@ $(document).ready(function () {
   var source = $('#list-template').html();
   var template = Handlebars.compile(source);
 
+  // array di bandiere
+  var flags = ['en', 'es', 'it', 'pt', 'ja', 'de', 'fr', 'cn'];
+
   // imposto di default il valore dell'input vuoto
   inputSearch.val("");
 
@@ -102,6 +105,19 @@ $(document).ready(function () {
                 var filmLanguage = arrayItem.original_language; // salvo la lingua di ogni film ritornato
                 var filmRank = arrayItem.vote_average; // salvo il voto di ogni film ritornato
 
+                console.log(flags.includes('en.png'));
+                var flagImg = filmLanguage;
+                
+                
+                for (let j = 0; j < flags.length; j++) {
+                  var flagsItem = flags[j];
+
+                  if (flagsItem.includes(filmLanguage)) {
+                     flagImg = '<img src='  + 'img/'+ flagsItem + '.png' + '' + '>';
+                  } 
+
+                }
+
                 // trasformo il voto in numero intero e lo divido per due 
                 var rankConvert = Math.ceil(filmRank / 2);
                 console.log(rankConvert);
@@ -129,7 +145,7 @@ $(document).ready(function () {
 
                   var context = {
                     title: filmTitle,
-                    language: filmLanguage,
+                    language: flagImg,
                     rank: rankStar,
                     type: 'Film'
                   }
@@ -142,7 +158,7 @@ $(document).ready(function () {
                     title: filmTitle,
                     strongOriginalTitle: 'Titolo originale: ',
                     originalTitle: filmOriginalTitle,
-                    language: filmLanguage,
+                    language: flagImg,
                     rank: rankStar,
                     type: 'Film'
                   }
@@ -212,6 +228,17 @@ $(document).ready(function () {
             console.log(rankConvert);
             console.log(filmRank);
 
+            var flagImg = filmLanguage;
+
+            for (let j = 0; j < flags.length; j++) {
+              var flagsItem = flags[j];
+
+              if (flagsItem.includes(filmLanguage)) {
+                 flagImg = '<img src=' + 'img/' + flagsItem + '.png' + '' + '>';
+              } 
+
+            }
+
             var rankStar;
 
             if (rankConvert == 0) {
@@ -234,7 +261,7 @@ $(document).ready(function () {
 
               var context = {
                 title: filmTitle,
-                language: filmLanguage,
+                language: flagImg,
                 rank: rankStar,
                 type: 'SerieTv'
               }
@@ -247,7 +274,7 @@ $(document).ready(function () {
                 title: filmTitle,
                 strongOriginalTitle: 'Titolo originale: ',
                 originalTitle: filmOriginalTitle,
-                language: filmLanguage,
+                language: flagImg,
                 rank: rankStar,
                 type: 'SerieTv'
               }
