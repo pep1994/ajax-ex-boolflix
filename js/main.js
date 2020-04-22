@@ -113,7 +113,8 @@ $(document).ready(function () {
                   var flagsItem = flags[j];
 
                   if (flagsItem.includes(filmLanguage)) {
-                     flagImg = '<img src='  + 'img/'+ flagsItem + '.png' + '' + '>';
+                    flagImg = '<img src=' + '"' + 'img/' + flagsItem + '.png' + '"' + 'alt=' + '"' + flagsItem + '"' + 'class=' + '"' + 'flag' + '"' + '>';
+                    // $('img[src=' + '"' + 'img/' + flagsItem + '.png' + '"').attr('alt', flagsItem);
                   } 
 
                 }
@@ -234,7 +235,7 @@ $(document).ready(function () {
               var flagsItem = flags[j];
 
               if (flagsItem.includes(filmLanguage)) {
-                 flagImg = '<img src=' + 'img/' + flagsItem + '.png' + '' + '>';
+                flagImg = '<img src=' + '"' + 'img/' + flagsItem + '.png' + '"' + 'alt=' + '"' + flagsItem + '"' + 'class=' + '"' + 'flag' + '"' + '>';
               } 
 
             }

@@ -76,7 +76,16 @@ h1 {
   margin-top: 10px;
 }
 
-.film-result img {
+.film-result ul li {
+  margin: 8px;
+}
+
+.film-result ul li strong {
+  margin-right: 5px;
+}
+
+.film-result img.flag {
   width: 50px;
+  vertical-align: middle;
 }
 /**************/
