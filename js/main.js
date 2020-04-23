@@ -32,11 +32,15 @@ $(document).ready(function () {
   var template = Handlebars.compile(source);
 
   
-  // imposto di default il valore dell'input vuoto
+  // imposto di default il valore dell'input di ricerca vuoto
   inputSearch.val("");
+
+  // imposto di default il valore dell'input select a "all"
+  $('select').val('all')
 
   // associo l'evento click al button di invio ricerca. Cliccando il bottone parte la funzione ajaxPrint, una volta per richiamare i film e un'altra per le serietv
   $('#go').click(function () {  
+    
 
     $('.container').html(''); // rimuovo l'html presente in container, perchè in questo modo i risultati della ricerca precedente vengono eliminati lasciando posto a quelli della nuova ricerca
 
@@ -92,9 +96,7 @@ $(document).ready(function () {
     // salvo in una variabile il valore di select ogni volta che cambia
     var selectVal = $(this).val();
     
-    // nascondo tutti i risultati
-    $('.film-result').hide();
-
+    
     // ciclo per etrapolare il valore del data-attribute 
     $('.film-result').each(function () {
 
@@ -105,6 +107,11 @@ $(document).ready(function () {
       // se il valore di select è uguale al valore del data-attribute di quell'elemento, allora mostralo
       if (selectVal == dataVal) {
         $(this).show();
+
+        // altrimenti l'elemento viene nascosto
+      } else {
+        
+        $(this).hide();
 
       } 
 
@@ -124,6 +131,7 @@ $(document).ready(function () {
   
   function ajaxPrint (proprietàTitolo, proprietàTitoloOriginale, type, endPoint, notFoundType) {
     
+    var selectVal = $('select').val();
 
     var inputSearchVal;
 
@@ -201,9 +209,24 @@ $(document).ready(function () {
             }
 
             
-
             // aggiungo al container i risultati della chiamata ajax attraverso il template
             $('.container').append(template(context));
+
+            // faccio un controllo. Se il valore del select è impostato su film, verranno mostrati solo i film
+            if (selectVal == 'film') {
+
+              $('.film-result[data-tipo="serietv"').hide();
+              // altrimenti se il valore è impostato su serietv, verranno mostrate solo le serietv
+            } else if (selectVal == 'serietv') {
+
+              $('.film-result[data-tipo="film"').hide();
+
+              // altrimenti verranno mostrati tutti i risultati
+            } else {
+
+              $('.film-result').show();
+
+            }
 
             // applico uno stile css ai div che contengono le info di film e serie tv per dargli un'animazione
             $('.film-result').css({
