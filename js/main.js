@@ -84,7 +84,38 @@ $(document).ready(function () {
     } else {
       $('header').css('background', '#000');
     }
-   });
+  });
+  
+  // evento change per il tag select
+  $('select').change(function () { 
+
+    // salvo in una variabile il valore di select ogni volta che cambia
+    var selectVal = $(this).val();
+    
+    // nascondo tutti i risultati
+    $('.film-result').hide();
+
+    // ciclo per etrapolare il valore del data-attribute 
+    $('.film-result').each(function () {
+
+      // salvo in una variabile il valore del data-attribute
+      var dataVal = $(this).data('tipo');
+      console.log(dataVal);
+
+      // se il valore di select è uguale al valore del data-attribute di quell'elemento, allora mostralo
+      if (selectVal == dataVal) {
+        $(this).show();
+
+      } 
+
+    });
+
+    // se il valore di select è uguale a "all" allora mostra sia film che serieTv
+    if (selectVal == 'all') {
+      $('.film-result').show();
+    }
+    
+  });
 
 
 
@@ -148,7 +179,8 @@ $(document).ready(function () {
                 copertina: cover, 
                 language:filmLanguage, // bandiera o stringa con lingua del film o serieTv
                 rank: filmRank, // stelle del rank
-                type: type // se film o serieTv
+                type: type, // se film o serieTv
+                dataTipo: type.toLowerCase() // salvo nel data-attribute se è un film o serieTv
               }
 
               // altrimenti stampo anche il titolo originale
@@ -162,7 +194,8 @@ $(document).ready(function () {
                 originalTitle: filmOriginalTitle,
                 language: filmLanguage,
                 rank: filmRank,
-                type: type
+                type: type,
+                dataTipo: type.toLowerCase()  // salvo nel data-attribute se è un film o serieTv
               }
 
             }

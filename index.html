@@ -15,6 +15,11 @@
         <h1>BOOLFLIX</h1>
       </div>
       <div class="nav">
+        <select name="filter_type" id="filter">
+          <option value="all">All</option>
+          <option value="film">Film</option>
+          <option value="serietv">SerieTv</option>
+        </select>
         <input id="search" type="search" placeholder="search...">
         <button id="go">Go</button>
       </div>
@@ -37,7 +42,7 @@
 
     <!-- Template -->
     <script id="list-template" type="text/x-handlebars-template">
-      <div class="film-result">
+      <div class="film-result" data-tipo="{{dataTipo}}">
         <h3>{{title}}</h3>
         <ul >
           <li>{{{copertina}}}</li>
