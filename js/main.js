@@ -15,6 +15,13 @@ Trasformiamo poi la stringa statica della lingua in una vera e propria bandiera 
 Allarghiamo poi la ricerca anche alle serie tv. Con la stessa azione di ricerca dovremo prendere sia i film che corrispondono alla query, sia le serie tv, stando attenti ad avere alla fine dei valori simili (le serie e i film hanno campi nel JSON di risposta diversi, simili ma non sempre identici)
 */
 
+/* Milestone 3:
+In questo milestone come prima cosa aggiungiamo la copertina del film o della serie al nostro elenco. Ci viene passata dall’API solo la parte finale dell’URL, questo perché poi potremo generare da quella porzione di URL tante dimensioni diverse. Dovremo prendere quindi l’URL base delle immagini di TMDB: https://image.tmdb.org/t/p/ per poi aggiungere la dimensione che vogliamo generare (troviamo tutte le dimensioni possibili a questo link: https://www.themoviedb.org/talk/53c11d4ec3a3684cf4006400) per poi aggiungere la parte finale dell’URL passata dall’API.
+Esempio di URL che torna la copertina di BORIS:
+https://image.tmdb.org/t/p/w185/s2VDcsMh9ZhjFUxw77uCFDpTuXp.jpg
+*/
+
+
 $(document).ready(function () {
   
   var inputSearch = $('#search'); // salvo in una variabile il riferimento all'input di ricerca
@@ -24,9 +31,7 @@ $(document).ready(function () {
   var source = $('#list-template').html();
   var template = Handlebars.compile(source);
 
-  // array di bandiere
-  var flags = ['en', 'es', 'it', 'pt', 'ja', 'de', 'fr', 'cn'];
-
+  
   // imposto di default il valore dell'input vuoto
   inputSearch.val("");
 
@@ -118,75 +123,17 @@ $(document).ready(function () {
 
             var filmTitle = arrayItem[proprietàTitolo]; // salvo il titolo di ogni film o serieTv ritornato
             var filmOriginalTitle = arrayItem[proprietàTitoloOriginale]; // salvo il titolo originale di ogni film o serieTv ritornato
-            var filmLanguage = arrayItem.original_language; // salvo la lingua di ogni film/serieTv ritornato
-            var filmRank = arrayItem.vote_average; // salvo il voto di ogni film/serieTv ritornato
-
-
-            // trasformo il voto in numero intero e lo divido per due 
-            var rankConvert = Math.ceil(filmRank / 2);
-            console.log(rankConvert);
-            console.log(filmRank);
-
-            // definisco una variabile che di default ha lo stesso valore della variabile della lingua
-            var flagImg = filmLanguage;
-
-            // ciclo for sull'array delle bandiere
-            for (let j = 0; j < flags.length; j++) {
-
-              // variabile che salva l'elemento dell'array ad ogni iterazione
-              var flagsItem = flags[j];
-
-              // se l'elemento dell'array contiene la lingua allora la variabile flagImg diventerà una stringa che conterrà l'immagine della bandiera di quella lingua, altrineti manterrà il valore impostato di default
-              if (flagsItem.includes(filmLanguage)) {
-                flagImg = '<img src=' + '"' + 'img/' + flagsItem + '.png' + '"' + 'alt=' + '"' + flagsItem + '"' + 'class=' + '"' + 'flag' + '"' + '>';
-              }
-
-            }
-
-            // variabile che contiene le stelle del rank. Cambierà di valore in base al voto del film o serieTv
-            var rankStar;
-
-            var $iconStarEmpty = '<i class="far fa-star"></i>';
-            var $iconStarFull = '<i class="fas fa-star"></i>';
-            
-
-            // se è uguale a 0 la variabile conterrà tutte stelle vuote
-            if (rankConvert == 0) {
-
-              rankStar = $iconStarEmpty + $iconStarEmpty + $iconStarEmpty + $iconStarEmpty + $iconStarEmpty;
-              
-              // se è uguale a 1 conterrà una stella piena e 4 vuote
-            } else if (rankConvert == 1) { 
-
-              rankStar = $iconStarFull + $iconStarEmpty + $iconStarEmpty + $iconStarEmpty + $iconStarEmpty;
-              // se è uguale a 2 conterrà due stelle piene e 3 vuote
-            } else if (rankConvert == 2) {
-
-              rankStar = $iconStarFull + $iconStarFull + $iconStarEmpty + $iconStarEmpty + $iconStarEmpty;
-              // se è uguale a 3 conterrà tre stelle piene e 2 vuote
-            } else if (rankConvert == 3) {
-
-              rankStar = $iconStarFull + $iconStarFull + $iconStarFull + $iconStarEmpty + $iconStarEmpty;
-              // se è uguale a 4 conterrà quattro stelle piene e 1 vuota
-            } else if (rankConvert == 4) {
-
-              rankStar = $iconStarFull + $iconStarFull + $iconStarFull + $iconStarFull + $iconStarEmpty;
-              // altrimenti conterrà tutte stelle piene
-            } else {
-
-              rankStar = $iconStarFull + $iconStarFull + $iconStarFull + $iconStarFull + $iconStarFull;
-
-            }
-
-
+            var filmLanguage = generaBandiere(arrayItem.original_language); // salvo la lingua di ogni film/serieTv ritornato dalla funzione
+            var filmRank = generaVotoStelle(arrayItem.vote_average); // salvo il voto di ogni film/serieTv ritornato dalla funzione
+  
             // se il titolo è uguale al titolo originale non stampo il titolo originale
             if (filmTitle == filmOriginalTitle) {
 
               // stampo valori nei segnaposto del template
               var context = {
                 title: filmTitle, // titolo del film o serieTv
-                language: flagImg, // bandiera o stringa con lingua del film o serieTv
-                rank: rankStar, // stelle del rank
+                language:filmLanguage, // bandiera o stringa con lingua del film o serieTv
+                rank: filmRank, // stelle del rank
                 type: type // se film o serieTv
               }
 
@@ -198,8 +145,8 @@ $(document).ready(function () {
                 title: filmTitle,
                 strongOriginalTitle: 'Titolo originale: ',
                 originalTitle: filmOriginalTitle,
-                language: flagImg,
-                rank: rankStar,
+                language: filmLanguage,
+                rank: filmRank,
                 type: type
               }
 
@@ -221,6 +168,52 @@ $(document).ready(function () {
 
       }
     });
+
+  }
+
+
+  // funzione che genera le stelle in base al voto del film o serieTv
+  function generaVotoStelle(voto) {
+    
+    // divido il voto per due in modo che vada da 0 a 5 e poi lo arrotondo per eccesso
+    var rankConvert = Math.ceil(voto / 2); 
+    var starImg = "";
+    
+    // ciclo che stampa 5 stelle
+    for (let i = 1; i <= 5; i++) {
+      
+      // se la var i è minore del voto òa variabile conterrà tante stelle piene quanto è il voto
+      if (i <= rankConvert) {
+        
+        starImg += '<i class="fas fa-star"></i>';
+
+        // altrimenti conterrà stelle vuote 
+      } else {
+
+        starImg += '<i class="far fa-star"></i>';
+        
+      }
+      
+    }
+
+    return starImg; // ritorno la variabile che contiene 5 stelle
+  }
+
+
+  // funzione che stampa le bandiere della lingua appropriata. Nel caso le bandiere di quella lingua del film o serieTv non fosse presente, verrà stampato direttamente il codice di lingua ritornato dalla chiamata ajax
+  function generaBandiere(lingua) {
+    
+    // array di bandiere
+    var flags = ['en', 'es', 'it', 'pt', 'ja', 'de', 'fr', 'cn'];
+
+    // se l'elemento dell'array contiene la lingua allora la variabile flagImg diventerà una stringa che conterrà l'immagine della bandiera di quella lingua, altrineti manterrà il valore impostato di default
+    if (flags.includes(lingua)) {
+      flagImg = '<img src=' + '"' + 'img/' + lingua + '.png' + '"' + 'alt=' + '"' + lingua + '"' + 'class=' + '"' + 'flag' + '"' + '>';
+
+      return flagImg; // ritorno la variabile che contiene l'immagine della bandiera se è presente nell'array
+    }
+  
+    return lingua; // se no ritorno il valore che mi ritorna la chiamata ajax
 
   }
   
