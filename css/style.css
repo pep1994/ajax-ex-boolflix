@@ -6,20 +6,29 @@
 }
 
 main {
-  height: calc(100vh - 70px);
-  overflow-y: scroll;
+  margin-top: 70px;
+}
+
+body {
+  background-color: rgba(0, 0, 0, .9);
 }
 /*******************/
 
 
 /**** header ****/
 header {
-  background-color: #000;
+  background: #000;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 20px;
   height: 70px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 10;
+  transition: all .4s linear;
 }
 
 h1 {
@@ -35,7 +44,7 @@ h1 {
 #go {
   cursor: pointer;
   padding: 5px;
-  background-color: #e50914;
+  background-color: rgb(229, 9, 20);
   color: #fff;
   border: none;
   border-radius: 3px;
@@ -53,6 +62,7 @@ h1 {
   margin: 0 auto;
   align-items: stretch;
   justify-content: center;
+
 }
 
  .not-found {
@@ -67,10 +77,14 @@ h1 {
 .film-result  {
   margin: 2%;
   padding: 15px;
-  flex-basis: calc(100% / 4 - 5%);
+  flex-basis: calc(100% / 4 - 4%);
   background-color: rgb(241, 241, 241);
   border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+}
+
+.film-result h3 {
+  text-align: center;
 }
 
 .film-result ul {

@@ -70,11 +70,21 @@ $(document).ready(function () {
   
   // al click sul logo boolflix l'eventuale scroll torna in alto
   $('h1').click(function () {
-    $('main').animate({
+    $('html').animate({
       scrollTop: 0
     }, 600);
   });
 
+  // aggancio evento scroll al documento
+  $(document).scroll(function () {
+    
+    // se la pagina ha scrollato per più dell'altezza dell'header allora questo diventerà trasparente
+    if ($(document).scrollTop() > $('header').height()) {
+      $('header').css('background', 'transparent');
+    } else {
+      $('header').css('background', '#000');
+    }
+   });
 
 
 
@@ -157,9 +167,25 @@ $(document).ready(function () {
 
             }
 
+            
+
             // aggiungo al container i risultati della chiamata ajax attraverso il template
             $('.container').append(template(context));
 
+            // applico uno stile css ai div che contengono le info di film e serie tv per dargli un'animazione
+            $('.film-result').css({
+              'position': 'relative',
+              'top': '-300px',
+              'opacity': 0
+              
+            });
+
+            // animazione
+            $('.film-result').animate({
+              top: 0,
+              opacity: 1
+            }, 1000);
+            
           }
 
         }
