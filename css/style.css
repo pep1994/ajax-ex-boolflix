@@ -49,7 +49,7 @@ h1 {
   display: flex;
   flex-wrap: wrap;
   padding: 20px;
-  max-width: 1100px;
+  max-width: 1150px;
   margin: 0 auto;
   align-items: stretch;
   justify-content: center;
@@ -67,7 +67,7 @@ h1 {
 .film-result  {
   margin: 2%;
   padding: 15px;
-  flex-basis: calc(100% / 4 - 4%);
+  flex-basis: calc(100% / 4 - 5%);
   background-color: rgb(241, 241, 241);
   border-radius: 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);

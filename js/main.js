@@ -105,7 +105,7 @@ $(document).ready(function () {
       success: function (result, stato) {
 
         var arrayResult = result.results; // salvo in una variabile l'array che mi ritorna dalla chiamata ajax
-        console.log(arrayResult);
+        
 
         // se l'array è vuoto, cioè non ha risultati, allora stampa il messaggio di errore
         if (arrayResult.length <= 0) {
@@ -119,19 +119,23 @@ $(document).ready(function () {
           for (let i = 0; i < arrayResult.length; i++) {
 
             var arrayItem = arrayResult[i]; // salvo l'item dell'array
-            console.log(arrayItem);
+            
 
             var filmTitle = arrayItem[proprietàTitolo]; // salvo il titolo di ogni film o serieTv ritornato
             var filmOriginalTitle = arrayItem[proprietàTitoloOriginale]; // salvo il titolo originale di ogni film o serieTv ritornato
             var filmLanguage = generaBandiere(arrayItem.original_language); // salvo la lingua di ogni film/serieTv ritornato dalla funzione
             var filmRank = generaVotoStelle(arrayItem.vote_average); // salvo il voto di ogni film/serieTv ritornato dalla funzione
+            var cover = generaCover(arrayItem.poster_path); // salvo la copertina ritornata dalla funzione. 
+
+            
   
             // se il titolo è uguale al titolo originale non stampo il titolo originale
             if (filmTitle == filmOriginalTitle) {
-
+              
               // stampo valori nei segnaposto del template
               var context = {
                 title: filmTitle, // titolo del film o serieTv
+                copertina: cover, 
                 language:filmLanguage, // bandiera o stringa con lingua del film o serieTv
                 rank: filmRank, // stelle del rank
                 type: type // se film o serieTv
@@ -143,6 +147,7 @@ $(document).ready(function () {
               // stampo valori nei segnaposto del template
               context = {
                 title: filmTitle,
+                copertina: cover,
                 strongOriginalTitle: 'Titolo originale: ',
                 originalTitle: filmOriginalTitle,
                 language: filmLanguage,
@@ -204,7 +209,7 @@ $(document).ready(function () {
   function generaBandiere(lingua) {
     
     // array di bandiere
-    var flags = ['en', 'es', 'it', 'pt', 'ja', 'de', 'fr', 'cn'];
+    var flags = ['en', 'es', 'it', 'pt', 'ja', 'de', 'fr', 'cn', 'pl', 'ru', 'nl'];
 
     // se l'elemento dell'array contiene la lingua allora la variabile flagImg diventerà una stringa che conterrà l'immagine della bandiera di quella lingua, altrineti manterrà il valore impostato di default
     if (flags.includes(lingua)) {
@@ -215,6 +220,25 @@ $(document).ready(function () {
   
     return lingua; // se no ritorno il valore che mi ritorna la chiamata ajax
 
+  }
+
+  // funzione che genera la cover del film o della serieTv. In caso fosse presente il path dell'immagine nella chiamata ajax allora la cover sarà composta dall'immagine, altrimenti verrà comunicato all'utenete che l'immagine non è disponibile
+  function generaCover(coverPath) {
+
+    var coverVal;
+
+    if (coverPath !== null) {
+
+      coverVal = '<img src="' + 'https://image.tmdb.org/t/p/w185' + coverPath + '" alt="cover">'
+
+    } else {
+
+      coverVal = 'Immagine di copertina non disponibile';
+
+    }
+
+    return coverVal;
+    
   }
   
   
