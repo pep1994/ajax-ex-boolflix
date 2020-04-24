@@ -21,14 +21,14 @@
           <option value="serietv">SerieTv</option>
         </select>
         <input id="search" type="search" placeholder="search...">
-        <button id="go">Go</button>
+        <button id="go">GO</button>
       </div>
     </header>
     <!----------->
 
     <!-- contenuto pagina -->
     <main>
-
+  
       <div class="container">
 
         <!-- inserisco template tramite js -->
@@ -43,14 +43,24 @@
     <!-- Template -->
     <script id="list-template" type="text/x-handlebars-template">
       <div class="film-result" data-tipo="{{dataTipo}}">
+
+        
+          {{{copertina}}}
+        
+        <div class="type">
+          <strong>{{type}}</strong>
+        </div>
+
+        
         <h3>{{title}}</h3>
-        <ul >
-          <li>{{{copertina}}}</li>
-          <li><strong>{{strongOriginalTitle}}</strong> {{originalTitle}}</li>
-          <li><strong>Lingua: </strong>{{{language}}}</li>
-          <li><strong>Rank: </strong>{{{rank}}}</li>
-          <li><strong>Tipo: </strong>{{type}}</li>
-        </ul>
+          <ul>
+            
+            <li><strong>{{strongOriginalTitle}}</strong> {{originalTitle}}</li>
+            <li><strong>Lingua: </strong>{{{language}}}</li>
+            <li><strong>Rank: </strong>{{{rank}}}</li>
+            <li><strong>Overview: </strong>{{overview}}</li>
+          </ul>
+        
       </div>
     </script>
     <!-------------->

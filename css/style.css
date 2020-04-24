@@ -17,7 +17,7 @@ body {
 
 /**** header ****/
 header {
-  background: #000;
+  background: transparent;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -28,7 +28,7 @@ header {
   left: 0;
   width: 100%;
   z-index: 10;
-  transition: all .4s linear;
+  transition: all .3s linear;
 }
 
 h1 {
@@ -48,7 +48,13 @@ h1 {
   color: #fff;
   border: none;
   border-radius: 3px;
-  margin-left: 5px;
+}
+
+.nav {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-basis: 16%;
 }
 /*****************/
 
@@ -58,7 +64,7 @@ h1 {
   display: flex;
   flex-wrap: wrap;
   padding: 20px;
-  max-width: 1150px;
+  max-width: 1200px;
   margin: 0 auto;
   align-items: stretch;
   justify-content: center;
@@ -75,26 +81,90 @@ h1 {
 
 /* Template */
 .film-result  {
-  margin: 2%;
-  padding: 15px;
-  flex-basis: calc(100% / 4 - 4%);
-  background-color: rgb(241, 241, 241);
-  border-radius: 5px;
-  box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+  margin: 1%;
+  width: calc(100% / 3 - 2%);
+  height: 500px;
+  border: solid 1px white;
+  display: flex;
+  flex-direction: column;
+  background-color: #000;
+  color: #fff;
+  position: relative;
+}
+
+.film-result:hover .cover {
+  display: none;
+}
+
+.film-result:hover .type {
+  display: none;
+}
+
+.film-result:hover ul {
+  display: block;
+  padding: 10px;
+}
+
+
+.film-result:hover h3 {
+  display: block;
+}
+
+
+.film-result i {
+  color: rgb(229, 9, 20);
+}
+
+.cover {
+  height: 96%;
+}
+
+.not-img {
+  position: absolute;
+  bottom: 4%;
+  left: 0;
+  width: 100%;
+  height: 89%;
+}
+
+.type {
+  height: 4%;
+  background-color: #e50914;
+  color: rgba(0, 0, 0, .9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
 }
 
 .film-result h3 {
   text-align: center;
+  position: absolute;
+  top: 8px;
+  left: 0;
+  width: 100%;
+  display: none;
+  font-size: 20px;
 }
+
+.not-img~h3 {
+  display: block;
+}
+
 
 .film-result ul {
   list-style-type: none;
-  margin-top: 10px;
+  margin-top: 40px;
+  display: none;
 }
 
 .film-result ul li {
-  margin: 8px;
+  margin: 10px;
 }
+
 
 .film-result ul li strong {
   margin-right: 5px;

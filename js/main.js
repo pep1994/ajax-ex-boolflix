@@ -84,9 +84,9 @@ $(document).ready(function () {
     
     // se la pagina ha scrollato per più dell'altezza dell'header allora questo diventerà trasparente
     if ($(document).scrollTop() > $('header').height()) {
-      $('header').css('background', 'transparent');
-    } else {
       $('header').css('background', '#000');
+    } else {
+      $('header').css('background', 'transparent');
     }
   });
   
@@ -176,6 +176,7 @@ $(document).ready(function () {
             var filmRank = generaVotoStelle(arrayItem.vote_average); // salvo il voto di ogni film/serieTv ritornato dalla funzione
             var cover = generaCover(arrayItem.poster_path); // salvo la copertina ritornata dalla funzione. 
 
+            var overview = arrayItem.overview;
             
   
             // se il titolo è uguale al titolo originale non stampo il titolo originale
@@ -188,7 +189,8 @@ $(document).ready(function () {
                 language:filmLanguage, // bandiera o stringa con lingua del film o serieTv
                 rank: filmRank, // stelle del rank
                 type: type, // se film o serieTv
-                dataTipo: type.toLowerCase() // salvo nel data-attribute se è un film o serieTv
+                dataTipo: type.toLowerCase(), // salvo nel data-attribute se è un film o serieTv
+                overview: overview
               }
 
               // altrimenti stampo anche il titolo originale
@@ -203,7 +205,8 @@ $(document).ready(function () {
                 language: filmLanguage,
                 rank: filmRank,
                 type: type,
-                dataTipo: type.toLowerCase()  // salvo nel data-attribute se è un film o serieTv
+                dataTipo: type.toLowerCase(),  // salvo nel data-attribute se è un film o serieTv
+                overview: overview
               }
 
             }
@@ -311,11 +314,16 @@ $(document).ready(function () {
 
     if (coverPath !== null) {
 
-      coverVal = '<img src="' + 'https://image.tmdb.org/t/p/w185' + coverPath + '" alt="cover">'
+      coverVal = '<img src="' + 'https://image.tmdb.org/t/p/w342' + coverPath + '" alt="cover" class="cover">'
+      
+
 
     } else {
 
-      coverVal = 'Immagine di copertina non disponibile';
+    
+
+      coverVal = '<img src="img/imgnondisponibile.jpg" alt="img-non-disponibile" class="cover not-img">';
+      
 
     }
 
