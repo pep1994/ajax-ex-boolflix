@@ -26,6 +26,7 @@
     </header>
     <!----------->
 
+    
     <!-- contenuto pagina -->
     <main>
   
@@ -44,41 +45,24 @@
     <script id="list-template" type="text/x-handlebars-template">
       <div class="film-result" data-tipo="{{dataTipo}}">
 
-        
           {{{copertina}}}
         
         <div class="type">
           <strong>{{type}}</strong>
         </div>
-
-        
         <h3>{{title}}</h3>
           <ul>
-            
             <li><strong>{{strongOriginalTitle}}</strong> {{originalTitle}}</li>
             <li><strong>Lingua: </strong>{{{language}}}</li>
             <li><strong>Rank: </strong>{{{rank}}}</li>
             <li><strong>Overview: </strong>{{overview}}</li>
             <li class="attori"><strong>Attori principali: </strong></li>
           </ul>
-        
-          <!-- <li class="attori"><strong>Attori: </strong></li> -->
       </div>
     </script>
     <!-------------->
 
-    <script id="ciao-template" type="text/x-handlebars-template">
-          
-              <ul>
-                
-                <li><strong>Attori: </strong> {{attori}}</li>
-                
-              </ul>
-            
-              <!-- <li class="attori"><strong>Attori: </strong></li> -->
-          
-        </script>
-
+    
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.6/handlebars.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
