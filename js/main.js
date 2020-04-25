@@ -46,9 +46,9 @@ $(document).ready(function () {
 
     $('.not-found').remove(); // rimuovo gli eventuali messaggi di errore in modo che se la ricerca non trova nuovamente film o serie tv, il messaggio non si raddoppi
     
-    ajaxPrint('title', 'original_title', 'Film', "https://api.themoviedb.org/3/search/movie", 'La ricerca non ha prodotto risultati di Film', '/movie/', 'film', 'indexFilm'); // funzione che ritorna i film
+    ajaxPrint('title', 'original_title', 'Film', "https://api.themoviedb.org/3/search/movie", 'La ricerca non ha prodotto risultati di Film', '/movie/', 'film', 0); // funzione che ritorna i film
  
-    ajaxPrint('name', 'original_name', 'SerieTv', "https://api.themoviedb.org/3/search/tv", 'La ricerca non ha prodotto risultati di SerieTv', '/tv/', 'serietv', 'indexSerie'); // funzione che ritorna le serieTv
+    ajaxPrint('name', 'original_name', 'SerieTv', "https://api.themoviedb.org/3/search/tv", 'La ricerca non ha prodotto risultati di SerieTv', '/tv/', 'serietv', 0); // funzione che ritorna le serieTv
 
   });
 
@@ -64,10 +64,10 @@ $(document).ready(function () {
     // se l'utente preme il tasto invio parte la funzione ajaxPrint come per il click sul bottone
       
       
-        ajaxPrint('title', 'original_title', 'Film', "https://api.themoviedb.org/3/search/movie", 'La ricerca non ha prodotto risultati di Film', '/movie/', 'film', 'indexFilm');
+        ajaxPrint('title', 'original_title', 'Film', "https://api.themoviedb.org/3/search/movie", 'La ricerca non ha prodotto risultati di Film', '/movie/', 'film', 0);
       
       
-        ajaxPrint('name', 'original_name', 'SerieTv', "https://api.themoviedb.org/3/search/tv", 'La ricerca non ha prodotto risultati di SerieTv', '/tv/', 'serietv', 'indexSerie');
+        ajaxPrint('name', 'original_name', 'SerieTv', "https://api.themoviedb.org/3/search/tv", 'La ricerca non ha prodotto risultati di SerieTv', '/tv/', 'serietv', 0);
 
     }
 
@@ -95,8 +95,8 @@ $(document).ready(function () {
     }
   });
   
-  // evento change per il tag select
-  $('select').change(function () { 
+  // evento change per il tag select tipi
+  $('#filter').change(function () { 
 
     // salvo in una variabile il valore di select ogni volta che cambia
     var selectVal = $(this).val();
@@ -130,11 +130,55 @@ $(document).ready(function () {
   });
 
 
+  // evento change per il tag select generi
+  $('#filter-generi').change(function () {
+
+    // salvo in una variabile il valore di select ogni volta che cambia
+    var genereVal = $(this).val();
+
+    // salvo il riferimento a tutti i blocchi template
+   var result = document.getElementsByClassName('film-result');
+    console.log(result);
+
+    // eseguo ciclo sui template per salvarmi il valore del data-attribute
+    for (var i = 0; i < result.length; i++) {
+      var item = result[i]; // salvo blocco ad ogni iterazione
+      console.log(item);
+
+      var dataItem = item.getAttribute('data-genere'); // salvo il valore del data-attribute
+      console.log(dataItem);
+
+      
+      var arrayData = dataItem.split(","); // converto il valore del data-attribute in un array per poter verificare quando il valore del select è contenuto nell'array
+      
+      // se il valore del select è contenuto nell'array del singolo blocco, allora il singolo blocco resterà visibile
+      if (arrayData.includes(genereVal)) {
+
+        item.style.display = 'flex';
+
+        // altrimenti il blocco verrà nascosto
+      } else {
+
+        item.style.display = 'none';
+
+      }
+
+      // se il valore è sul 'all' verranno mostrati tutti i blocchi
+      if (genereVal == 'all') {
+        $('.film-result').show();
+      }
+      
+    }
+    
+  });
+
+
+
 
 
   // funzione che esegue una chiamata ajax, elabora i risultati e li stampa in pagina 
   
-  function ajaxPrint(proprietàTitolo, proprietàTitoloOriginale, type, url, notFoundType, tipoAjaxCast, tipoDataAttribute, indexType) {
+  function ajaxPrint(proprietàTitolo, proprietàTitoloOriginale, type, url, notFoundType, tipoAjaxCast, tipoDataAttribute, valore) {
     
     var selectVal = $('select').val();
 
@@ -172,7 +216,7 @@ $(document).ready(function () {
           // altrimenti esegui il ciclo e stampa le informazioni in pagina
         } else {
 
-          var indexType = 0;
+          var indexType = valore; // variabile che rappresenta l'indice di ogni template stampato in pagina
           
 
           // eseguo ciclo sull'array per estrapolare le informazioni che mi servono ad ogni item
@@ -189,6 +233,29 @@ $(document).ready(function () {
             var cover = generaCover(arrayItem.poster_path); // salvo la copertina ritornata dalla funzione. 
 
             var overview = arrayItem.overview; // salvo la descrizione
+
+            var filmId = arrayItem.id; // salvo l'id del film o serieTv
+
+
+            
+
+            var genereArray = arrayItem.genre_ids; // salvo l'id che corrisponde al genere
+
+          
+            // for (var k = 0; k < genereArray.length; k++) {
+              
+            //   var elementArrayGenere = genereArray[k];
+             
+            //    console.log(elementArrayGenere);
+               
+            // }
+
+            
+
+            
+           
+
+            
             
 
             
@@ -213,7 +280,8 @@ $(document).ready(function () {
                 rank: filmRank, // stelle del rank
                 type: type, // se film o serieTv
                 dataTipo: type.toLowerCase(), // salvo nel data-attribute se è un film o serieTv
-                overview: overview
+                overview: overview,
+                dataGenere: genereArray
               }
 
               // altrimenti stampo anche il titolo originale
@@ -229,7 +297,8 @@ $(document).ready(function () {
                 rank: filmRank,
                 type: type,
                 dataTipo: type.toLowerCase(),  // salvo nel data-attribute se è un film o serieTv
-                overview: overview
+                overview: overview,
+                dataGenere: genereArray
 
               }
 
@@ -271,11 +340,15 @@ $(document).ready(function () {
               opacity: 1
             }, 1000);
 
-            var filmId = arrayItem.id; // salvo l'id del film o serieTv
+           
 
+            // chiamata attori
             $.ajax({
-              method: "GET",
+
               url: "https://api.themoviedb.org/3" + tipoAjaxCast + filmId + "/credits?api_key=fab78916a45f752a410befc4f3336db2",
+              
+              method: "GET",
+              
               dataType: "json",
 
               success: function (data, stato) {
@@ -286,45 +359,38 @@ $(document).ready(function () {
 
                 var arrayCast = data.cast; // salvo l'array contenente gli attori
 
-                
+                // eseguo ciclo sull'array ottenuto
                 for (var j = 0; j < arrayCast.length; j++) {
                   
+                  // eseguo il resto del codice se la variabile "j" è minore di 5
                   if (j < 5) {
 
                     var nomeAttore = arrayCast[j].name; // salvo il nome dei primi 5 attori del film o serieTv
 
+                    // salvo il valore html contenuto in ciascun list-item con la class "attori", in modo che non si sovrascriva 
                     var back = $('[data-tipo="' + tipoDataAttribute + '"').eq(indexType).find('.attori').html();
                     
-                    
+                    //  nell'html dell'elemento aggiungo i nomi degli attori, poi incremento l'indice in modo che alla prossima iterazione verrà considerato l'elemento successivo relativo 
                     $('[data-tipo="' + tipoDataAttribute + '"').eq(indexType).find('.attori').html(back + " - " + nomeAttore);
-                    // $('[data-tipo="film"').eq(indexFilm).find('.attori').html(backFilm + " - " + nomeAttore);
                     
-
-                    
-                    // var back = $('.film-result[data-tipo="serietv"]').eq(index).find('.attori').html();
-                    
-                    // $('.film-result').eq(index).find('.attori').html(back + " - " + nomeAttore  );
-                  
-                    // console.log(index);
                   }
                   
 
                  
                 }
 
-                console.log(indexType);
+                // console.log(indexType);
                 // se l'indice è minore della lunghezza dell'array principale meno 1, allora l'indice si incrementa di uno
                 if (indexType < arrayResult.length - 1) {
                   indexType++;
                 }
-                console.log(indexType);
+                // console.log(indexType);
 
               }, error: function () {
 
               }
 
             }); 
-            
             
           }
 
@@ -342,11 +408,6 @@ $(document).ready(function () {
     });
 
   }
-
-  // function caricaAttori(tipoAjaxCast) {
-
-    
-  // }
 
 
   // funzione che genera le stelle in base al voto del film o serieTv
