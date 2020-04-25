@@ -30,7 +30,8 @@ $(document).ready(function () {
   // variabili Template Handlebars
   var source = $('#list-template').html();
   var template = Handlebars.compile(source);
-
+  var source2 = $('#ciao-template').html();
+  var template2 = Handlebars.compile(source2);
   
   // imposto di default il valore dell'input di ricerca vuoto
   inputSearch.val("");
@@ -46,9 +47,10 @@ $(document).ready(function () {
 
     $('.not-found').remove(); // rimuovo gli eventuali messaggi di errore in modo che se la ricerca non trova nuovamente film o serie tv, il messaggio non si raddoppi
 
-    ajaxPrint('title', 'original_title', 'Film', 'movie', 'La ricerca non ha prodotto risultati di Film'); // funzione che ritorna i film
+    ajaxPrint('title', 'original_title', 'Film', "https://api.themoviedb.org/3/search/movie", 'La ricerca non ha prodotto risultati di Film', '/movie/');
+ // funzione che ritorna i film
 
-    ajaxPrint('name', 'original_name', 'SerieTv', 'tv', 'La ricerca non ha prodotto risultati di SerieTv'); // funzione che ritorna le serieTv
+    ajaxPrint('name', 'original_name', 'SerieTv', "https://api.themoviedb.org/3/search/tv", 'La ricerca non ha prodotto risultati di SerieTv', '/tv/'); // funzione che ritorna le serieTv
 
   });
 
@@ -62,14 +64,16 @@ $(document).ready(function () {
       $('.not-found').remove(); // rimuovo gli eventuali messaggi di errore in modo che se la ricerca non trova nuovamente film o serie tv, il messaggio non si raddoppi
 
     // se l'utente preme il tasto invio parte la funzione ajaxPrint come per il click sul bottone
-      ajaxPrint('title', 'original_title', 'Film', 'movie', 'La ricerca non ha prodotto risultati di Film');
+      ajaxPrint('title', 'original_title', 'Film', "https://api.themoviedb.org/3/search/movie", 'La ricerca non ha prodotto risultati di Film', '/movie/', 'film', 'indexFilm');
 
-      ajaxPrint('name', 'original_name', 'SerieTv', 'tv', 'La ricerca non ha prodotto risultati di SerieTv');
+      ajaxPrint('name', 'original_name', 'SerieTv', "https://api.themoviedb.org/3/search/tv", 'La ricerca non ha prodotto risultati di SerieTv', '/tv/', 'serietv', 'indexSerie');
 
     }
 
   }
   );
+
+  
 
   
   // al click sul logo boolflix l'eventuale scroll torna in alto
@@ -102,7 +106,7 @@ $(document).ready(function () {
 
       // salvo in una variabile il valore del data-attribute
       var dataVal = $(this).data('tipo');
-      console.log(dataVal);
+     
 
       // se il valore di select è uguale al valore del data-attribute di quell'elemento, allora mostralo
       if (selectVal == dataVal) {
@@ -129,7 +133,7 @@ $(document).ready(function () {
 
   // funzione che esegue una chiamata ajax, elabora i risultati e li stampa in pagina 
   
-  function ajaxPrint (proprietàTitolo, proprietàTitoloOriginale, type, endPoint, notFoundType) {
+  function ajaxPrint(proprietàTitolo, proprietàTitoloOriginale, type, url, notFoundType, tipoAjaxCast, ciao, indexType) {
     
     var selectVal = $('select').val();
 
@@ -139,7 +143,7 @@ $(document).ready(function () {
 
     $.ajax({ // chiamata ajax
 
-      url: "https://api.themoviedb.org/3/search/" + endPoint, // url api con end-point
+      url: url, // url api con end-point
 
       method: "GET", // metodo
 
@@ -153,9 +157,12 @@ $(document).ready(function () {
 
       success: function (result, stato) {
 
+        var indexType = 0;
+
         var arrayResult = result.results; // salvo in una variabile l'array che mi ritorna dalla chiamata ajax
         
-
+        // var index = number;
+        // console.log(index);
         // se l'array è vuoto, cioè non ha risultati, allora stampa il messaggio di errore
         if (arrayResult.length <= 0) {
 
@@ -167,6 +174,7 @@ $(document).ready(function () {
           // eseguo ciclo sull'array per estrapolare le informazioni che mi servono ad ogni item
           for (let i = 0; i < arrayResult.length; i++) {
 
+            
             var arrayItem = arrayResult[i]; // salvo l'item dell'array
             
 
@@ -177,8 +185,12 @@ $(document).ready(function () {
             var cover = generaCover(arrayItem.poster_path); // salvo la copertina ritornata dalla funzione. 
 
             var overview = arrayItem.overview;
-            
-  
+
+            var filmId = arrayItem.id; // salvo l'id del film o serieTv
+
+            // caricaAttori(tipoAjaxCast);
+
+
             // se il titolo è uguale al titolo originale non stampo il titolo originale
             if (filmTitle == filmOriginalTitle) {
               
@@ -186,7 +198,7 @@ $(document).ready(function () {
               var context = {
                 title: filmTitle, // titolo del film o serieTv
                 copertina: cover, 
-                language:filmLanguage, // bandiera o stringa con lingua del film o serieTv
+                language: filmLanguage, // bandiera o stringa con lingua del film o serieTv
                 rank: filmRank, // stelle del rank
                 type: type, // se film o serieTv
                 dataTipo: type.toLowerCase(), // salvo nel data-attribute se è un film o serieTv
@@ -207,6 +219,7 @@ $(document).ready(function () {
                 type: type,
                 dataTipo: type.toLowerCase(),  // salvo nel data-attribute se è un film o serieTv
                 overview: overview
+
               }
 
             }
@@ -214,6 +227,8 @@ $(document).ready(function () {
             
             // aggiungo al container i risultati della chiamata ajax attraverso il template
             $('.container').append(template(context));
+            
+
 
             // faccio un controllo. Se il valore del select è impostato su film, verranno mostrati solo i film
             if (selectVal == 'film') {
@@ -244,10 +259,71 @@ $(document).ready(function () {
               top: 0,
               opacity: 1
             }, 1000);
+
+
+
+            $.ajax({
+              method: "GET",
+              url: "https://api.themoviedb.org/3" + tipoAjaxCast + filmId + "/credits?api_key=fab78916a45f752a410befc4f3336db2",
+              dataType: "json",
+
+              success: function (data, stato) {
+
+                
+
+                // ho i dati da inserire. come recupero l'elemento html per poi inserire i dati?
+
+                var arrayCast = data.cast; // salvo l'array contenente gli attori
+
+                
+                for (var j = 0; j < arrayCast.length; j++) {
+
+                  if (j <= 4) {
+
+                    var nomeAttore = arrayCast[j].name; // salvo il nome dei primi 5 attori del film o serieTv
+
+                    var back = $('[data-tipo="' + ciao + '"').eq(indexType).find('.attori').html();
+                    
+                    
+                    $('[data-tipo="' + ciao + '"').eq(indexType).find('.attori').html(back + " - " + nomeAttore);
+                    // $('[data-tipo="film"').eq(indexFilm).find('.attori').html(backFilm + " - " + nomeAttore);
+
+
+                    
+                    // var back = $('.film-result[data-tipo="serietv"]').eq(index).find('.attori').html();
+                    
+                    // $('.film-result').eq(index).find('.attori').html(back + " - " + nomeAttore  );
+                  
+                    // console.log(index);
+                  }
+                  
+
+                 
+                }
+
+                
+                
+
+                indexType++;
+                // indexFilm++;
+                // console.log(index);
+                
+
+              }, error: function () {
+
+              }
+            }); 
+            
+            
+           
+
             
           }
 
         }
+
+       
+        
 
       },
 
@@ -259,7 +335,14 @@ $(document).ready(function () {
       }
     });
 
+    
+
   }
+
+  // function caricaAttori(tipoAjaxCast) {
+
+    
+  // }
 
 
   // funzione che genera le stelle in base al voto del film o serieTv
