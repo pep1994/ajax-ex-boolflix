@@ -15,33 +15,60 @@
         <h1>BOOLFLIX</h1>
       </div>
       <div class="nav">
-        <select name="filter_type" id="filter">
+        <!-- <select name="filter_type" id="filter">
           <option value="all">All</option>
           <option value="film">Film</option>
           <option value="serietv">SerieTv</option>
+        </select> -->
+        <select name="filter_generi_film" id="filter-generi-film" data-tipo="film">
+          <optgroup label="Generi Film">
+            <option value="all">Tutti i Film</option>
+            <option value="anything">Nascondi tutti i Film</option>
+            <option value="28">Action</option>
+            <option value="12">Adventure</option>
+            <option value="16">Animation</option>
+            <option value="35">Comedy</option>
+            <option value="80">Crime</option>
+            <option value="99">Documentary</option>
+            <option value="18">Drama</option>
+            <option value="10751">Family</option>
+            <option value="14">Fantasy</option>
+            <option value="36">History</option>
+            <option value="27">Horror</option>
+            <option value="10402">Music</option>
+            <option value="9648">Mystery</option>
+            <option value="10749">Romance</option>
+            <option value="878">Science Fiction</option>
+            <option value="10770">TV Movie</option>
+            <option value="53">Thriller</option>
+            <option value="10752">War</option>
+            <option value="37">Western</option>
+          </optgroup>
         </select>
-        <select name="filter_generi" id="filter-generi">
-          <option value="all">All</option>
-          <option value="28">Action</option>
-          <option value="12">Adventure</option>
-          <option value="16">Animation</option>
-          <option value="35">Comedy</option>
-          <option value="80">Crime</option>
-          <option value="99">Documentary</option>
-          <option value="18">Drama</option>
-          <option value="10751">Family</option>
-          <option value="14">Fantasy</option>
-          <option value="36">History</option>
-          <option value="27">Horror</option>
-          <option value="10402">Music</option>
-          <option value="9648">Mystery</option>
-          <option value="10749">Romance</option>
-          <option value="878">Science Fiction</option>
-          <option value="10770">TV Movie</option>
-          <option value="53">Thriller</option>
-          <option value="10752">War</option>
-          <option value="37">Western</option>
+
+        <select name="filter_generi_serietv" id="filter-generi-serietv" data-tipo="serietv">
+          <optgroup label="Generi Serie Tv">
+            <option value="all">Tutte le Serie Tv</option>
+            <option value="anything">Nascondi tutte le Serie Tv</option>
+            <option value="10759">Action & Adventure</option>
+            <option value="16">Animation</option>
+            <option value="35">Comedy</option>
+            <option value="80">Crime</option>
+            <option value="99">Documentary</option>
+            <option value="18">Drama</option>
+            <option value="10751">Family</option>
+            <option value="10762">Kids</option>
+            <option value="9648">Mystery</option>
+            <option value="10763">News</option>
+            <option value="10764">Reality</option>
+            <option value="10765">Sci-Fi & Fantasy</option>
+            <option value="10766">Soap</option>
+            <option value="10767">Talk</option>
+            <option value="10768">War & Politics</option>
+            <option value="37">Western</option>
+          </optgroup>
         </select>
+        
         <input id="search" type="search" placeholder="search...">
         <button id="go">GO</button>
       </div>
@@ -78,7 +105,7 @@
             <li><strong>Lingua: </strong>{{{language}}}</li>
             <li><strong>Rank: </strong>{{{rank}}}</li>
             <li><strong>Overview: </strong>{{overview}}</li>
-            <li class="attori"><strong>Attori principali: </strong></li>
+            <li class="attori"><strong>Cast: </strong></li>
           </ul>
       </div>
     </script>

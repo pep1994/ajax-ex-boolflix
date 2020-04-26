@@ -49,8 +49,6 @@ $(document).ready(function () {
   }
   );
 
-
-  
   // al click sul logo boolflix l'eventuale scroll torna in alto
   $('h1').click(function () {
     $('html').animate({
@@ -69,30 +67,30 @@ $(document).ready(function () {
     }
   });
   
-  // evento change per il tag select tipi
-  $('#filter').change(function () { 
+  // evento change per il tag select che gestisce le serieTv
+  $('#filter-generi-serietv').change(function () { 
 
-    generaFiltri(); // richiamo funzione genera filtri
+    generaFiltri('#filter-generi-serietv', '.film-result[data-tipo="serietv"]'); // richiamo funzione genera filtri
 
   });
 
 
-  // evento change per il tag select generi
-  $('#filter-generi').change(function () {
+  // evento change per il tag select che gestisce i film
+  $('#filter-generi-film').change(function () {
 
-    generaFiltri(); // richiamo funzione genera filtri
+    generaFiltri('#filter-generi-film', '.film-result[data-tipo="film"]'); // richiamo funzione genera filtri
     
   });
 
-  
+
+
+  // FUNZIONI
+
 
   // funzione che esegue una chiamata ajax, elabora i risultati e li stampa in pagina 
   
   function ajaxPrint(proprietàTitolo, proprietàTitoloOriginale, type, url, notFoundType, tipoAjaxCast, tipoDataAttribute, valore) {
     
-    var selectVal = $('#filter').val();
-    $('#filter-generi').val('all'); // imposto di default il valore 'all' per il select del filtro generi quando viene fatta una chiamata
-
     var inputSearchVal;
 
     inputSearchVal = inputSearch.val(); // salvo il valore dell'input ogni volta che viene premuto il tasto invio
@@ -192,24 +190,11 @@ $(document).ready(function () {
             
             // aggiungo al container i risultati della chiamata ajax attraverso il template
             $('.container').append(template(context));
-            
 
-            // faccio un controllo. Se il valore del select è impostato su film, verranno mostrati solo i film
-            if (selectVal == 'film') {
+            generaFiltri('#filter-generi-film', '.film-result[data-tipo="film"]'); // richiamo la funzione generafiltri per i film
 
-              $('.film-result[data-tipo="serietv"').hide();
-              // altrimenti se il valore è impostato su serietv, verranno mostrate solo le serietv
-            } else if (selectVal == 'serietv') {
-
-              $('.film-result[data-tipo="film"').hide();
-
-              // altrimenti verranno mostrati tutti i risultati
-            } else {
-
-              $('.film-result').show();
-
-            }
-
+            generaFiltri('#filter-generi-serietv', '.film-result[data-tipo="serietv"]'); // richiamo la funzione generafiltri per le serietv
+ 
             // applico uno stile css ai div che contengono le info di film e serie tv per dargli un'animazione
             $('.film-result').css({
               'position': 'relative',
@@ -314,16 +299,17 @@ $(document).ready(function () {
   }
 
 
-  function generaFiltri() {
+  // funzione che genera i filtri per film e serietv
+  function generaFiltri(parametroSelezione, dataTipoFiltro) {
 
-    // salvo in una variabile il valore del filtro tipo 
-    var selectVal = $('#filter').val();
-
-    // salvo in una variabile il valore del filtro genere 
-    var genereVal = $('#filter-generi').val();
+  
+    // salvo in una variabile il valore del filtro  
+    var genereVal = $(parametroSelezione).val();
+    var dataFilter = $(parametroSelezione).data('tipo');
+    console.log(dataFilter);
 
     // salvo il riferimento ad ogni blocco di film o serieTv
-    var result = document.getElementsByClassName('film-result');
+    var result = document.querySelectorAll(dataTipoFiltro);
 
     // ciclo per etrapolare il valore del data-attribute e fare i confronti 
     for (var i = 0; i < result.length; i++) {
@@ -339,32 +325,29 @@ $(document).ready(function () {
       // creo un array con i valori del data-genere in modo da potergli chiedere successivamente se all'interno dell'array è presente il valore del data-genere di ogni blocco
       var arrayData = dataItem.split(",");
 
-      // se il il valore del filtro tipo è uguale al valore del data-tipo del blocco, e il valore del data-genere del blocco è contenuto nell'array di quel blocco, allora quel blocco viene mostrato
-      if (selectVal == dataVal && arrayData.includes(genereVal)) {
+      // se il valore del data-tipo del filtro è uguale al data-tipo del blocco, e se l'array con gli id del genere del blocco contiene il valore del filtro allora mostra quel blocco
+      if (dataFilter == dataVal && arrayData.includes(genereVal)) {
 
         item.style.display = 'flex';
 
-        // altrimenti se il valore del filtro tipo è su "all", e il valore del data-genere del blocco è contenuto nell'array di quel blocco, allora quel blocco viene mostrato
-      } else if (selectVal == 'all' && arrayData.includes(genereVal)) {
-
-        item.style.display = 'flex';
-
-        // se così' non fosse il blocco viene nascosto
+        // altrimenti nascondilo
       } else {
 
         item.style.display = 'none';
 
       }
 
-      // se il valore del filtro generi è su "all" e anche il valore del filtro tipo è su "all", verranno mostrati tutti i blocchi
-      if (genereVal == 'all' && selectVal == 'all') {
+      // se il il valore del filtro è su all mostra tutti quei blocchi
+      if (genereVal == 'all') {
 
-        $('.film-result').show();
+        $(dataTipoFiltro).show();
 
-        // altrimenti se il valore del filtro genere è su "all", e il valore del filtro tipo è uguale al valore del data tipo del blocco, quel blocco verrà mostrato
-      } else if (genereVal == 'all' && selectVal == dataVal) {
+      }
 
-        item.style.display = 'flex';
+      // se il valore del filtro è su anything nascondi tutti quei blocchi
+      if (genereVal == 'anything') {
+
+        $(dataTipoFiltro).hide();
 
       }
 
@@ -372,6 +355,7 @@ $(document).ready(function () {
 
   }
 
+  // funzione che fa una chiamata ajax per recuperare il cast
   function caricaAttori(tipoAjaxCast, filmId, tipoDataAttribute, indexType) {
 
     // chiamata attori
@@ -396,10 +380,10 @@ $(document).ready(function () {
             var nomeAttore = arrayCast[j].name; // salvo il nome dei primi 5 attori del film o serieTv
 
             // salvo il valore html contenuto in ciascun list-item con la class "attori", in modo che non si sovrascriva 
-            var back = $('[data-tipo="' + tipoDataAttribute + '"').eq(indexType).find('.attori').html();
+            var back = $('.film-result[data-tipo="' + tipoDataAttribute + '"').eq(indexType).find('.attori').html();
 
             //  nell'html dell'elemento aggiungo i nomi degli attori, poi incremento l'indice in modo che alla prossima iterazione verrà considerato l'elemento successivo relativo 
-            $('[data-tipo="' + tipoDataAttribute + '"').eq(indexType).find('.attori').html(back + " - " + nomeAttore);
+            $('.film-result[data-tipo="' + tipoDataAttribute + '"').eq(indexType).find('.attori').html(back + "   " + nomeAttore);
 
           }
 
