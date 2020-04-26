@@ -1,27 +1,3 @@
-/* Milestone 1:
- Creare un layout base con una searchbar(una input e un button) in cui possiamo scrivere completamente o parzialmente il nome di un film.Possiamo, cliccando il  bottone, cercare sull’API tutti i film che contengono ciò che ha scritto l’utente.
- Vogliamo dopo la risposta dell’API visualizzare a schermo i seguenti valori per ogni film trovato:
- Titolo
- Titolo Originale
- Lingua
- Voto
-*/
-
-/* Milestone 2:
-Trasformiamo il voto da 1 a 10 decimale in un numero intero da 1 a 5, così da permetterci di stampare a schermo un numero di stelle piene che vanno da 1 a 5, lasciando le restanti vuote (troviamo le icone in FontAwesome).
-Arrotondiamo sempre per eccesso all’unità successiva, non gestiamo icone mezze piene
-Trasformiamo poi la stringa statica della lingua in una vera e propria bandiera della nazione corrispondente, gestendo il caso in cui non abbiamo la bandiera della nazione ritornata dall’API (le flag non ci sono in FontAwesome).
-
-Allarghiamo poi la ricerca anche alle serie tv. Con la stessa azione di ricerca dovremo prendere sia i film che corrispondono alla query, sia le serie tv, stando attenti ad avere alla fine dei valori simili (le serie e i film hanno campi nel JSON di risposta diversi, simili ma non sempre identici)
-*/
-
-/* Milestone 3:
-In questo milestone come prima cosa aggiungiamo la copertina del film o della serie al nostro elenco. Ci viene passata dall’API solo la parte finale dell’URL, questo perché poi potremo generare da quella porzione di URL tante dimensioni diverse. Dovremo prendere quindi l’URL base delle immagini di TMDB: https://image.tmdb.org/t/p/ per poi aggiungere la dimensione che vogliamo generare (troviamo tutte le dimensioni possibili a questo link: https://www.themoviedb.org/talk/53c11d4ec3a3684cf4006400) per poi aggiungere la parte finale dell’URL passata dall’API.
-Esempio di URL che torna la copertina di BORIS:
-https://image.tmdb.org/t/p/w185/s2VDcsMh9ZhjFUxw77uCFDpTuXp.jpg
-*/
-
-
 $(document).ready(function () {
   
   var inputSearch = $('#search'); // salvo in una variabile il riferimento all'input di ricerca
@@ -61,20 +37,18 @@ $(document).ready(function () {
       $('.container').html(''); // rimuovo l'html presente in container, perchè in questo modo i risultati della ricerca precedente vengono eliminati lasciando posto a quelli della nuova ricerca
       $('.not-found').remove(); // rimuovo gli eventuali messaggi di errore in modo che se la ricerca non trova nuovamente film o serie tv, il messaggio non si raddoppi
 
-    // se l'utente preme il tasto invio parte la funzione ajaxPrint come per il click sul bottone
+      // se l'utente preme il tasto invio parte la funzione ajaxPrint come per il click sul bottone
       
-      
-        ajaxPrint('title', 'original_title', 'Film', "https://api.themoviedb.org/3/search/movie", 'La ricerca non ha prodotto risultati di Film', '/movie/', 'film', 0);
-      
-      
-        ajaxPrint('name', 'original_name', 'SerieTv', "https://api.themoviedb.org/3/search/tv", 'La ricerca non ha prodotto risultati di SerieTv', '/tv/', 'serietv', 0);
+      ajaxPrint('title', 'original_title', 'Film', "https://api.themoviedb.org/3/search/movie", 'La ricerca non ha prodotto risultati di Film', '/movie/', 'film', 0);
+  
+  
+      ajaxPrint('name', 'original_name', 'SerieTv', "https://api.themoviedb.org/3/search/tv", 'La ricerca non ha prodotto risultati di SerieTv', '/tv/', 'serietv', 0);
 
     }
 
   }
   );
 
-  
 
   
   // al click sul logo boolflix l'eventuale scroll torna in alto
@@ -98,132 +72,19 @@ $(document).ready(function () {
   // evento change per il tag select tipi
   $('#filter').change(function () { 
 
-    // salvo in una variabile il valore di select ogni volta che cambia
-    var selectVal = $(this).val();
+    generaFiltri(); // richiamo funzione genera filtri
 
-    // salvo in una variabile il valore di select ogni volta che cambia
-    var genereVal = $('#filter-generi').val();
-
-    
-    var result = document.getElementsByClassName('film-result');
-
-    // ciclo per etrapolare il valore del data-attribute 
-    for (var i = 0; i < result.length; i++) {
-      var item = result[i];
-      
-      // salvo in una variabile il valore del data-attribute
-      var dataVal = item.getAttribute('data-tipo');
-      console.log(dataVal);
-
-      var dataItem = item.getAttribute('data-genere');
-
-      var arrayData = dataItem.split(","); 
-
-      // se il valore di select è uguale al valore del data-attribute di quell'elemento, allora mostralo
-      if (selectVal == dataVal && arrayData.includes(genereVal)) {
-        item.style.display = 'flex';
-
-        // altrimenti l'elemento viene nascosto
-      } else if (selectVal == 'all' && arrayData.includes(genereVal)) {
-
-        item.style.display = 'flex';
-
-      } else {
-
-        item.style.display = 'none';
-
-      } 
-
-      // se il valore di select è uguale a "all" allora mostra sia film che serieTv
-      
-
-      if (genereVal == 'all' && selectVal == 'all') {
-
-        $('.film-result').show();
-
-      } else if (genereVal == 'all' && selectVal == dataVal) {
-
-        item.style.display = 'flex';
-
-      }
-
-
-    }
-
-    
-
-      
-      // var dataGenere = $(this).data('genere');
-      // console.log(dataGenere);
-      // var arrayDataGenere = dataGenere.split(",");
-      // console.log(arrayDataGenere);
-
-  
   });
 
 
   // evento change per il tag select generi
   $('#filter-generi').change(function () {
 
-    var selectVal = $('#filter').val();
-
-    // salvo in una variabile il valore di select ogni volta che cambia
-    var genereVal = $(this).val();
-
-    // salvo il riferimento a tutti i blocchi template
-   var result = document.getElementsByClassName('film-result');
-    console.log(result);
-
-    // eseguo ciclo sui template per salvarmi il valore del data-attribute
-    for (var i = 0; i < result.length; i++) {
-      var item = result[i]; // salvo blocco ad ogni iterazione
-      console.log(item);
-
-      var dataVal = item.getAttribute('data-tipo');
-
-      var dataItem = item.getAttribute('data-genere'); // salvo il valore del data-attribute
-      console.log(dataItem);
-
-      
-      var arrayData = dataItem.split(","); // converto il valore del data-attribute in un array per poter verificare quando il valore del select è contenuto nell'array
-      
-      // se il valore del select è contenuto nell'array del singolo blocco, allora il singolo blocco resterà visibile
-      if (arrayData.includes(genereVal) && selectVal == dataVal) {
-
-        item.style.display = 'flex';
-
-        // altrimenti il blocco verrà nascosto
-      } else if (selectVal == 'all' && arrayData.includes(genereVal)) {
-
-        item.style.display = 'flex';
-
-      } else {
-
-        item.style.display = 'none';
-
-      }
-
-      // se il valore è sul 'all' verranno mostrati tutti i blocchi
-      if (genereVal == 'all' && selectVal == dataVal) {
-
-        item.style.display = 'flex';
-
-      }
-
-      if (genereVal == 'all' && selectVal == 'all') {
-
-        $('.film-result').show();
-
-      }
-      
-      
-    }
+    generaFiltri(); // richiamo funzione genera filtri
     
   });
 
-
-
-
+  
 
   // funzione che esegue una chiamata ajax, elabora i risultati e li stampa in pagina 
   
@@ -251,9 +112,7 @@ $(document).ready(function () {
       },
 
       success: function (result, stato) {
-
-        
-
+  
         var arrayResult = result.results; // salvo in una variabile l'array che mi ritorna dalla chiamata ajax
         
         // se l'array è vuoto, cioè non ha risultati, allora stampa il messaggio di errore
@@ -269,11 +128,9 @@ $(document).ready(function () {
 
           // eseguo ciclo sull'array per estrapolare le informazioni che mi servono ad ogni item
           for (var i = 0; i < arrayResult.length; i++) {
-
-            
+     
             var arrayItem = arrayResult[i]; // salvo l'item dell'array
             
-
             var filmTitle = arrayItem[proprietàTitolo]; // salvo il titolo di ogni film o serieTv ritornato
             var filmOriginalTitle = arrayItem[proprietàTitoloOriginale]; // salvo il titolo originale di ogni film o serieTv ritornato
             var filmLanguage = generaBandiere(arrayItem.original_language); // salvo la lingua di ogni film/serieTv ritornato dalla funzione
@@ -284,29 +141,9 @@ $(document).ready(function () {
 
             var filmId = arrayItem.id; // salvo l'id del film o serieTv
 
-
-            
-
             var genereArray = arrayItem.genre_ids; // salvo l'id che corrisponde al genere
 
           
-            // for (var k = 0; k < genereArray.length; k++) {
-              
-            //   var elementArrayGenere = genereArray[k];
-             
-            //    console.log(elementArrayGenere);
-               
-            // }
-
-            
-
-            
-           
-
-            
-            
-
-            
             // controllo se l'overview è più lungo di 400 caratteri
             if (overview.length > 400) {
              
@@ -357,7 +194,6 @@ $(document).ready(function () {
             $('.container').append(template(context));
             
 
-
             // faccio un controllo. Se il valore del select è impostato su film, verranno mostrati solo i film
             if (selectVal == 'film') {
 
@@ -388,58 +224,13 @@ $(document).ready(function () {
               opacity: 1
             }, 1000);
 
-           
-
-            // chiamata attori
-            $.ajax({
-
-              url: "https://api.themoviedb.org/3" + tipoAjaxCast + filmId + "/credits?api_key=fab78916a45f752a410befc4f3336db2",
-              
-              method: "GET",
-              
-              dataType: "json",
-
-              success: function (data, stato) {
-
-               
-
-                // ho i dati da inserire. come recupero l'elemento html per poi inserire i dati?
-
-                var arrayCast = data.cast; // salvo l'array contenente gli attori
-
-                // eseguo ciclo sull'array ottenuto
-                for (var j = 0; j < arrayCast.length; j++) {
-                  
-                  // eseguo il resto del codice se la variabile "j" è minore di 5
-                  if (j < 5) {
-
-                    var nomeAttore = arrayCast[j].name; // salvo il nome dei primi 5 attori del film o serieTv
-
-                    // salvo il valore html contenuto in ciascun list-item con la class "attori", in modo che non si sovrascriva 
-                    var back = $('[data-tipo="' + tipoDataAttribute + '"').eq(indexType).find('.attori').html();
-                    
-                    //  nell'html dell'elemento aggiungo i nomi degli attori, poi incremento l'indice in modo che alla prossima iterazione verrà considerato l'elemento successivo relativo 
-                    $('[data-tipo="' + tipoDataAttribute + '"').eq(indexType).find('.attori').html(back + " - " + nomeAttore);
-                    
-                  }
-                  
-
-                 
-                }
-
-                // console.log(indexType);
-                // se l'indice è minore della lunghezza dell'array principale meno 1, allora l'indice si incrementa di uno
-                if (indexType < arrayResult.length - 1) {
-                  indexType++;
-                }
-                // console.log(indexType);
-
-              }, error: function () {
-
-              }
-
-            }); 
+            // richiamo la funzione caricaAttori
+            caricaAttori(tipoAjaxCast, filmId, tipoDataAttribute, indexType);
             
+            // dopo l'esecuzione della funzione caricaAttori l'indice viene incrementato di uno
+            indexType++;
+            console.log(indexType);
+
           }
 
         }
@@ -512,21 +303,115 @@ $(document).ready(function () {
 
       coverVal = '<img src="' + 'https://image.tmdb.org/t/p/w342' + coverPath + '" alt="cover" class="cover">'
       
-
-
     } else {
 
-    
-
       coverVal = '<img src="img/imgnondisponibile.jpg" alt="img-non-disponibile" class="cover not-img">';
-      
 
     }
 
     return coverVal;
     
   }
-  
-  
+
+
+  function generaFiltri() {
+
+    // salvo in una variabile il valore del filtro tipo 
+    var selectVal = $('#filter').val();
+
+    // salvo in una variabile il valore del filtro genere 
+    var genereVal = $('#filter-generi').val();
+
+    // salvo il riferimento ad ogni blocco di film o serieTv
+    var result = document.getElementsByClassName('film-result');
+
+    // ciclo per etrapolare il valore del data-attribute e fare i confronti 
+    for (var i = 0; i < result.length; i++) {
+
+      var item = result[i]; // item dell'array, cioè ogni singolo blocco
+
+      // salvo in una variabile il valore del data-tipo del blocco
+      var dataVal = item.getAttribute('data-tipo');
+
+      // salvo in una variabile il valore del data-genere del blocco
+      var dataItem = item.getAttribute('data-genere');
+
+      // creo un array con i valori del data-genere in modo da potergli chiedere successivamente se all'interno dell'array è presente il valore del data-genere di ogni blocco
+      var arrayData = dataItem.split(",");
+
+      // se il il valore del filtro tipo è uguale al valore del data-tipo del blocco, e il valore del data-genere del blocco è contenuto nell'array di quel blocco, allora quel blocco viene mostrato
+      if (selectVal == dataVal && arrayData.includes(genereVal)) {
+
+        item.style.display = 'flex';
+
+        // altrimenti se il valore del filtro tipo è su "all", e il valore del data-genere del blocco è contenuto nell'array di quel blocco, allora quel blocco viene mostrato
+      } else if (selectVal == 'all' && arrayData.includes(genereVal)) {
+
+        item.style.display = 'flex';
+
+        // se così' non fosse il blocco viene nascosto
+      } else {
+
+        item.style.display = 'none';
+
+      }
+
+      // se il valore del filtro generi è su "all" e anche il valore del filtro tipo è su "all", verranno mostrati tutti i blocchi
+      if (genereVal == 'all' && selectVal == 'all') {
+
+        $('.film-result').show();
+
+        // altrimenti se il valore del filtro genere è su "all", e il valore del filtro tipo è uguale al valore del data tipo del blocco, quel blocco verrà mostrato
+      } else if (genereVal == 'all' && selectVal == dataVal) {
+
+        item.style.display = 'flex';
+
+      }
+
+    }
+
+  }
+
+  function caricaAttori(tipoAjaxCast, filmId, tipoDataAttribute, indexType) {
+
+    // chiamata attori
+    $.ajax({
+
+      url: "https://api.themoviedb.org/3" + tipoAjaxCast + filmId + "/credits?api_key=fab78916a45f752a410befc4f3336db2",
+
+      method: "GET",
+
+      dataType: "json",
+
+      success: function (data, stato) {
+        
+        var arrayCast = data.cast; // salvo l'array contenente gli attori
+
+        // eseguo ciclo sull'array ottenuto
+        for (var j = 0; j < arrayCast.length; j++) {
+
+          // eseguo il resto del codice se la variabile "j" è minore di 5
+          if (j < 5) {
+
+            var nomeAttore = arrayCast[j].name; // salvo il nome dei primi 5 attori del film o serieTv
+
+            // salvo il valore html contenuto in ciascun list-item con la class "attori", in modo che non si sovrascriva 
+            var back = $('[data-tipo="' + tipoDataAttribute + '"').eq(indexType).find('.attori').html();
+
+            //  nell'html dell'elemento aggiungo i nomi degli attori, poi incremento l'indice in modo che alla prossima iterazione verrà considerato l'elemento successivo relativo 
+            $('[data-tipo="' + tipoDataAttribute + '"').eq(indexType).find('.attori').html(back + " - " + nomeAttore);
+
+          }
+
+        }
+
+      }, error: function () {
+
+      }
+
+    }); 
+    
+  }
+
 });
 
