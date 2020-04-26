@@ -100,38 +100,72 @@ $(document).ready(function () {
 
     // salvo in una variabile il valore di select ogni volta che cambia
     var selectVal = $(this).val();
-    
-    
-    // ciclo per etrapolare il valore del data-attribute 
-    $('.film-result').each(function () {
 
+    // salvo in una variabile il valore di select ogni volta che cambia
+    var genereVal = $('#filter-generi').val();
+
+    
+    var result = document.getElementsByClassName('film-result');
+
+    // ciclo per etrapolare il valore del data-attribute 
+    for (var i = 0; i < result.length; i++) {
+      var item = result[i];
+      
       // salvo in una variabile il valore del data-attribute
-      var dataVal = $(this).data('tipo');
-     
+      var dataVal = item.getAttribute('data-tipo');
+      console.log(dataVal);
+
+      var dataItem = item.getAttribute('data-genere');
+
+      var arrayData = dataItem.split(","); 
 
       // se il valore di select è uguale al valore del data-attribute di quell'elemento, allora mostralo
-      if (selectVal == dataVal) {
-        $(this).show();
+      if (selectVal == dataVal && arrayData.includes(genereVal)) {
+        item.style.display = 'flex';
 
         // altrimenti l'elemento viene nascosto
+      } else if (selectVal == 'all' && arrayData.includes(genereVal)) {
+
+        item.style.display = 'flex';
+
       } else {
-        
-        $(this).hide();
+
+        item.style.display = 'none';
 
       } 
 
-    });
+      // se il valore di select è uguale a "all" allora mostra sia film che serieTv
+      
 
-    // se il valore di select è uguale a "all" allora mostra sia film che serieTv
-    if (selectVal == 'all') {
-      $('.film-result').show();
+      if (genereVal == 'all' && selectVal == 'all') {
+
+        $('.film-result').show();
+
+      } else if (genereVal == 'all' && selectVal == dataVal) {
+
+        item.style.display = 'flex';
+
+      }
+
+
     }
+
     
+
+      
+      // var dataGenere = $(this).data('genere');
+      // console.log(dataGenere);
+      // var arrayDataGenere = dataGenere.split(",");
+      // console.log(arrayDataGenere);
+
+  
   });
 
 
   // evento change per il tag select generi
   $('#filter-generi').change(function () {
+
+    var selectVal = $('#filter').val();
 
     // salvo in una variabile il valore di select ogni volta che cambia
     var genereVal = $(this).val();
@@ -145,6 +179,8 @@ $(document).ready(function () {
       var item = result[i]; // salvo blocco ad ogni iterazione
       console.log(item);
 
+      var dataVal = item.getAttribute('data-tipo');
+
       var dataItem = item.getAttribute('data-genere'); // salvo il valore del data-attribute
       console.log(dataItem);
 
@@ -152,11 +188,15 @@ $(document).ready(function () {
       var arrayData = dataItem.split(","); // converto il valore del data-attribute in un array per poter verificare quando il valore del select è contenuto nell'array
       
       // se il valore del select è contenuto nell'array del singolo blocco, allora il singolo blocco resterà visibile
-      if (arrayData.includes(genereVal)) {
+      if (arrayData.includes(genereVal) && selectVal == dataVal) {
 
         item.style.display = 'flex';
 
         // altrimenti il blocco verrà nascosto
+      } else if (selectVal == 'all' && arrayData.includes(genereVal)) {
+
+        item.style.display = 'flex';
+
       } else {
 
         item.style.display = 'none';
@@ -164,9 +204,18 @@ $(document).ready(function () {
       }
 
       // se il valore è sul 'all' verranno mostrati tutti i blocchi
-      if (genereVal == 'all') {
-        $('.film-result').show();
+      if (genereVal == 'all' && selectVal == dataVal) {
+
+        item.style.display = 'flex';
+
       }
+
+      if (genereVal == 'all' && selectVal == 'all') {
+
+        $('.film-result').show();
+
+      }
+      
       
     }
     
@@ -180,7 +229,8 @@ $(document).ready(function () {
   
   function ajaxPrint(proprietàTitolo, proprietàTitoloOriginale, type, url, notFoundType, tipoAjaxCast, tipoDataAttribute, valore) {
     
-    var selectVal = $('select').val();
+    var selectVal = $('#filter').val();
+    $('#filter-generi').val('all'); // imposto di default il valore 'all' per il select del filtro generi quando viene fatta una chiamata
 
     var inputSearchVal;
 
@@ -206,8 +256,6 @@ $(document).ready(function () {
 
         var arrayResult = result.results; // salvo in una variabile l'array che mi ritorna dalla chiamata ajax
         
-        // var index = number;
-        // console.log(index);
         // se l'array è vuoto, cioè non ha risultati, allora stampa il messaggio di errore
         if (arrayResult.length <= 0) {
 
