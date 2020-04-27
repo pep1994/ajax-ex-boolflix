@@ -21,7 +21,7 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px;
+  padding: 30px;
   height: 70px;
   position: fixed;
   top: 0;
@@ -37,13 +37,13 @@ h1 {
 }
 
 #search {
-  border-radius: 3px;
-  padding: 3px;
+  border-radius: 4px;
+  padding: 6px 12px;
 }
 
 #go {
   cursor: pointer;
-  padding: 5px;
+  padding: 10px;
   background-color: rgb(229, 9, 20);
   color: #fff;
   border: none;
@@ -53,8 +53,12 @@ h1 {
 .nav {
   display: flex;
   justify-content: space-around;
-  align-items: center;
   flex-basis: 16%;
+}
+
+select {
+  padding: 6px;
+  margin-right: 10px;
 }
 /*****************/
 
@@ -90,6 +94,7 @@ h1 {
   background-color: #000;
   color: #fff;
   position: relative;
+  line-height: 19px;
 }
 
 .film-result:hover .cover {
